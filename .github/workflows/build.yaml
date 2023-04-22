@@ -1,33 +1,28 @@
-name: Build and Publish Docker Image
+name: Docker Publish
 
 on:
-  release:
-    types: [created]
+  push:
+    branches: [ main ]
+
+env:
+  DOCKER_IMAGE_NAME: ping-explorer-eqty
+  DOCKER_REGISTRY: docker.pkg.github.com
+  DOCKER_USERNAME: ${{ github.repository_owner }}
+  DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: false
-          tags: |
-            cosmos-ping-explorer:${{ github.sha }}
-      - name: Save img
-        run: |
-          docker save ping-web > ping-web.tar
-          gzip ping-web.tar    - name: Upload file to release
-      - name: Upload Img
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: .
-          asset_name: ping-web.tar.gz
-          asset_content_type: application/octet-stream
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to GitHub Container Registry
+      run: echo $DOCKER_PASSWORD | docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME --password-stdin
+
+    - name: Build Docker image
+      run: docker build -t $DOCKER_REGISTRY/$DOCKER_USERNAME/$DOCKER_IMAGE_NAME .
+
+    - name: Push Docker image to GitHub Container Registry
+      run: docker push $DOCKER_REGISTRY/$DOCKER_USERNAME/$DOCKER_IMAGE_NAME
