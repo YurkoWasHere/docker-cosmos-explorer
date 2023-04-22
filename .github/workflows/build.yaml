@@ -7,7 +7,7 @@ on:
 env:
   DOCKER_IMAGE_NAME: ping-explorer-eqty
   DOCKER_REGISTRY: docker.pkg.github.com
-  DOCKER_USERNAME: ${{ github.repository_owner }}
+  DOCKER_USERNAME: yurkowashere #${{ github.repository_owner }}
   DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
