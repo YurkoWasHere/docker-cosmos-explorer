@@ -6,6 +6,7 @@ on:
 
 env:
   DOCKER_IMAGE_NAME: ping-explorer-eqty
+  DOCKER_REPO: docker-cosmos-explorer
   DOCKER_REGISTRY: docker.pkg.github.com
   DOCKER_USERNAME: yurkowashere #${{ github.repository_owner }}
   DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
@@ -22,7 +23,7 @@ jobs:
       run: echo $DOCKER_PASSWORD | docker login $DOCKER_REGISTRY -u $DOCKER_USERNAME --password-stdin
 
     - name: Build Docker image
-      run: docker build -t $DOCKER_REGISTRY/$DOCKER_USERNAME/$DOCKER_IMAGE_NAME .
+      run: docker build -t $DOCKER_REGISTRY/$DOCKER_USERNAME/$DOCKER_REPO/$DOCKER_IMAGE_NAME .
 
     - name: Push Docker image to GitHub Container Registry
-      run: docker push $DOCKER_REGISTRY/$DOCKER_USERNAME/$DOCKER_IMAGE_NAME
+      run: docker push $DOCKER_REGISTRY/$DOCKER_USERNAME/$DOCKER_REPO/$DOCKER_IMAGE_NAME
